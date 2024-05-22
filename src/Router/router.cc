@@ -6,6 +6,10 @@ Router :: Router (){
     sentFlitCount = 0;
     id = 0;
     cycle = 0;
+    edgeRouter = true;
+    cornerRouter = true;
+    config.x = 0;
+    config.y = 0;
 }
 
 Router :: Router (int x,  int y){
@@ -14,6 +18,15 @@ Router :: Router (int x,  int y){
     sentFlitCount = 0;
     id = 0;
     cycle = 0;
+    config.x = 0;
+    config.y = 0;
+
+    if (xDim == yDim){
+        cornerRouter = true;
+    } else {
+        cornerRouter = false;
+    }
+    cornerRouter = false;
 }
 
 void Router :: print (){
@@ -84,3 +97,21 @@ void Router :: generateInjectFlit(){
     coreInjectFlit = fl;
     
 }
+
+void Router :: setConfig(int x, int y){
+    config.x = x;
+    config.y = y;
+}
+
+bool Router :: canInjectFlit(){
+
+    for (int i=0; i< TotalDir; ++i){
+        if (!inputFlit[i].getValid()){
+            //Empty flit
+            return true;
+        }
+    }
+    // All flits are occupied
+    return false;
+}
+

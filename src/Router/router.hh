@@ -8,7 +8,9 @@
 class Router {
     int xDim;
     int yDim;
-
+    Coord config;
+    bool cornerRouter;
+    bool edgeRouter;
     int sentFlitCount;
     unsigned int id;
     unsigned int cycle;
@@ -27,11 +29,17 @@ class Router {
     void setInputFlit(Direction dir, Flit f);
     Flit getInputFlit(Direction dir);
     void removeInputFlit (Direction dir);
-
+    void setConfig(int x, int y);
     // Create function to set/get flit from output (flit) buffer
     void setOutputFlit (Direction dir, Flit f);
     Flit getOutputFlit (Direction dir);
+    
+    // Each router will be injecting the flit
     void generateInjectFlit();
+    //--------------------------------------------------------------
+    // Check whether injected flit can be considered for arbitration
+    bool canInjectFlit();
+    //------------------------------------------------------------
     void incrementCycleCount() {cycle += 1;}
 
     
