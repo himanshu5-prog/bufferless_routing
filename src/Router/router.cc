@@ -1,5 +1,6 @@
 #include "router.hh"
 
+//Constructor----------------------------------------------
 Router :: Router (){
     xDim = 0;
     yDim = 0;
@@ -28,7 +29,8 @@ Router :: Router (int x,  int y){
     }
     cornerRouter = false;
 }
-
+//------------------------------------------------------------------
+//Print function--------------------------------------------------------
 void Router :: print (){
     std :: cout << "Router information\n";
     std :: cout << "x coord: " << xDim << ", y coord: " << yDim << "\n";
@@ -46,7 +48,8 @@ void Router :: print (){
     inputFlit[South].print();
 
 }
-
+//-----------------------------------------------------------
+//Functions for inputFlit----------------------------
 void Router :: setInputFlit (Direction dir, Flit f){
     inputFlit[dir] = f;
 }
@@ -58,7 +61,8 @@ Flit Router :: getInputFlit (Direction dir){
 void Router :: removeInputFlit (Direction dir){
     inputFlit[dir].resetValid();
 }
-
+//--------------------------------------------
+//Functions for output Flit---------------------------
 void Router :: setOutputFlit( Direction dir, Flit f){
     outputFlit[dir] = f;
 }
@@ -67,11 +71,22 @@ Flit Router :: getOutputFlit (Direction dir){
     return outputFlit[dir];
 }
 
+void Router :: removeOutputFlit (Direction dir){
+    outputFlit[dir].resetValid();
+}
+//--------------------------------------------------
+//Misc Functions-----------------------------------
 void Router :: setDim (int x, int y){
     xDim = x;
     yDim = y;
 }
 
+void Router :: setConfig(int x, int y){
+    config.x = x;
+    config.y = y;
+}
+//------------------------------------------------
+//Function fot injectFlit----------------------------
 void Router :: generateInjectFlit(){
     Flit fl;
     int xDest, yDest;
@@ -93,14 +108,12 @@ void Router :: generateInjectFlit(){
     fl.setId(id);
 
     id += 1;
+   
+   if ( !(cDest.x == cSrc.x && cDest.y == cSrc.y) ){
 
-    coreInjectFlit = fl;
+        coreInjectFlit = fl;
+   } 
     
-}
-
-void Router :: setConfig(int x, int y){
-    config.x = x;
-    config.y = y;
 }
 
 bool Router :: canInjectFlit(){
@@ -115,3 +128,11 @@ bool Router :: canInjectFlit(){
     return false;
 }
 
+Flit Router :: getInjectFlit(){
+    return coreInjectFlit;
+}
+void Router :: removeInjectFlit(){
+    coreInjectFlit.resetValid();
+
+}
+//----------------------------------------------------

@@ -21,28 +21,35 @@ class Router {
     std::deque<Flit> coreCompletedFlit;
 
     public:
-
+    
+    //Constructor--------
     Router();
     Router(int x, int y);
+    //-------------------
+    //Misc. Function------------------------
+    void setConfig(int x, int y);
     void setDim(int x, int y);
+    void incrementCycleCount() {cycle += 1;}
+    //---------------------------------------
+    //Print functions----------------------
     void print();
+    ///-----------------------------------
+    // Functions for InputFlit--------------
     void setInputFlit(Direction dir, Flit f);
     Flit getInputFlit(Direction dir);
     void removeInputFlit (Direction dir);
-    void setConfig(int x, int y);
-    // Create function to set/get flit from output (flit) buffer
+    //--------------------------------------
+    // Functions for outputFlit---------------
     void setOutputFlit (Direction dir, Flit f);
     Flit getOutputFlit (Direction dir);
-    
-    // Each router will be injecting the flit
+    void removeOutputFlit(Direction dir);
+    //------------------------------------
+    // Function for inject flit-------------
     void generateInjectFlit();
-    //--------------------------------------------------------------
-    // Check whether injected flit can be considered for arbitration
+    Flit getInjectFlit();
+    void removeInjectFlit();
     bool canInjectFlit();
-    //------------------------------------------------------------
-    void incrementCycleCount() {cycle += 1;}
-
-    
+    //------------------------------------------------------------    
     
 };
 
