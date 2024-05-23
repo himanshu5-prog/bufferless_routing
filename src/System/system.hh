@@ -13,4 +13,5 @@ class System {
     void incrementCycleCount();
     unsigned int getCycleCount();
     void print();
+    void generateInjectFlit();
 };
