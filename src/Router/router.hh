@@ -30,6 +30,8 @@ class Router {
     void setConfig(int x, int y);
     void setDim(int x, int y);
     void incrementCycleCount() {cycle += 1;}
+    void setCycleCount(unsigned int c) { cycle = c;}
+    unsigned int getCycleCount() { return cycle;}
     //---------------------------------------
     //Print functions----------------------
     void print();

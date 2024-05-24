@@ -106,7 +106,7 @@ void Router :: generateInjectFlit(){
     fl.setDest(cDest);
     fl.setSrc(cSrc);
     fl.setId(id);
-
+    fl.setInjectTime(cycle);
     id += 1;
    
    if ( !(cDest.x == cSrc.x && cDest.y == cSrc.y) ){
