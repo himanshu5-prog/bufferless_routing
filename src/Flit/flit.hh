@@ -25,22 +25,31 @@ class Flit {
     unsigned int completeTime;
 
     public:
-
+    //Function related to Src and Dest
     Coord getSrc();
     Coord getDest();
-    unsigned int getId();
-    void setId(unsigned int x) { id = x;}
     void setSrc(Coord c);
     void setDest(Coord c);
+    //--------------------------------
+    //Function related to ID
+    unsigned int getId();
+    void setId(unsigned int x) { id = x;}
+    //-----------------------------------
+    //Function related to valid
     bool getValid();
     void setValid();
     void resetValid();
+    //----------------------------
+    //Functions related to time-------
     void setInjectTime(unsigned int t);
     void setCompleteTime(unsigned int t);
+    //---------------------------------
+    //Print function-------------------
     void print();
-    
-    //Constructor
+    //-----------------------------------
+    //Constructors-----------------------
     Flit();
     Flit(Coord s, Coord d, int i, int t);
+    //------------------------------------
 };
 #endif

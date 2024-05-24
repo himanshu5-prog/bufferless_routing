@@ -1,5 +1,6 @@
 #include "flit.hh"
 
+// Constructor--------------
 Flit :: Flit (){
     src.x = 0;
     src.y = 0;
@@ -18,37 +19,14 @@ Flit :: Flit (Coord s, Coord d, int i, int t){
     valid = true;
     injectTime = t;
 }
-
+//-------------------------------
+// Function related to Src and Dest
 Coord Flit :: getDest(){
     return dest;
 }
 
 Coord Flit :: getSrc(){
     return src;
-}
-
-unsigned int Flit :: getId(){
-    return id;
-}
-
-bool Flit :: getValid(){
-    return valid;
-}
-
-void Flit :: setInjectTime (unsigned int t){
-    injectTime = t;
-}
-
-void Flit :: setCompleteTime (unsigned int t){
-    completeTime = t;
-}
-
-void Flit :: setValid(){
-    valid = true;
-}
-
-void Flit :: resetValid(){
-    valid = false;
 }
 
 void Flit :: setSrc(Coord c){
@@ -59,6 +37,33 @@ void Flit :: setDest(Coord c){
     dest = c;
 }
 
+unsigned int Flit :: getId(){
+    return id;
+}
+//--------------------------------
+//Function related to time----------------
+void Flit :: setInjectTime (unsigned int t){
+    injectTime = t;
+}
+
+void Flit :: setCompleteTime (unsigned int t){
+    completeTime = t;
+}
+//----------------------------------------
+// Functios for Valid-----------
+void Flit :: setValid(){
+    valid = true;
+}
+
+void Flit :: resetValid(){
+    valid = false;
+}
+
+bool Flit :: getValid(){
+    return valid;
+}
+//----------------------------------
+//Print function---------------------------------------------------------------------
 void Flit :: print(){
    std :: cout << "####################################\n";
    std :: cout << "Flit Information:\n";
@@ -70,3 +75,4 @@ void Flit :: print(){
    std :: cout << "completion time: " << completeTime << "\n";
    std :: cout << "####################################\n"; 
 }
+//-----------------------------------------------------------------------------------
