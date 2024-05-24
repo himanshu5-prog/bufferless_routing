@@ -117,11 +117,13 @@ void Router :: generateInjectFlit(){
 }
 
 bool Router :: canInjectFlit(){
-
-    for (int i=0; i< TotalDir; ++i){
-        if (!inputFlit[i].getValid()){
-            //Empty flit
-            return true;
+    
+    if (coreInjectFlit.getValid()) {
+        for (int i=0; i< TotalDir; ++i){
+            if (!inputFlit[i].getValid()){
+                //Empty flit
+                return true;
+            }
         }
     }
     // All flits are occupied
@@ -131,8 +133,119 @@ bool Router :: canInjectFlit(){
 Flit Router :: getInjectFlit(){
     return coreInjectFlit;
 }
+
 void Router :: removeInjectFlit(){
     coreInjectFlit.resetValid();
 
 }
+
+void Router :: insertInjectFlit(){
+    assert (coreInjectFlit.getValid());
+
+    for (int i=0; i< TotalDir; ++i){
+        if (!inputFlit[i].getValid()){
+               inputFlit[i] = coreInjectFlit;
+               coreInjectFlit.resetValid();
+               return;
+        }
+    }
+}
 //----------------------------------------------------
+//Functions related to Routing
+Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
+
+    if (xDest == xDim){
+        assert (yDest != yDim);
+        if (yDest > yDim){
+            return North;
+
+        } else if ( yDest < yDim){
+            return South;
+        }
+
+    } else if ( yDest == yDim){
+        assert(xDest != xDim);
+
+        if (xDest > xDim){
+            return East;
+
+        } else if ( xDest < xDim){
+            return West;
+        }
+    } else if ( (xDest > xDim) && (yDest > yDim) ){
+        return (id % 2) ? East : North;
+
+    } else if ((xDest > xDim) && (yDest < yDim) ){
+        return  (id % 2)? East: South;
+
+    } else if ((xDest < xDim) && (yDest > yDim)){
+        return (id %2 ) ? West : North;
+
+    } else if ( xDest < xDim && (yDest < yDim)){
+        return (id % 2) ? West : South;
+    }
+}
+
+void Router :: processInputPort(){
+    //Check if inject flit can be routed. 
+    // Inject flit can be inseted to input flit only when
+    // -> inject flit is valid. AND
+    // -> there is free space in input flit buffer 
+    if (canInjectFlit()){
+        insertInjectFlit();
+    }
+}
+
+// determine how many input flits are valid
+int Router :: validInputFlitCount(){
+    int x  = 0;
+    for (int i = 0; i < TotalDir; ++i){
+        if (inputFlit[i].getValid()){
+            x += 1;
+        }
+    }
+
+    return x;
+}
+
+//Gives us oldest flit on input side
+Direction Router :: getOldestInputFlit(){
+    
+    assert ( validInputFlitCount() > 1);
+    int t;
+    bool found = false;
+    Direction dir;
+    for (int i = 0; i < TotalDir; ++i){
+        if (inputFlit[i].getValid() == false){
+            continue;
+        }
+
+        if (found == false){
+            t = inputFlit[i].getInjectTime();
+            found = true;
+            dir = (Direction)i;
+        } else {
+            if ( t > inputFlit[i].getInjectTime()){
+                t = inputFlit[i].getInjectTime();
+                dir = (Direction)i;
+            }
+        }
+    }
+    return dir;  
+}
+
+// Determine if either of input flit can be accepted
+
+void Router :: acceptInjectFlit(){
+
+    for(int i = 0; i < TotalDir; ++i){
+        if (inputFlit[i].getValid()){
+            if (inputFlit[i].getDest().x == xDim && inputFlit[i].getDest().y == yDim){
+                //Got the flit.
+                coreCompletedFlit.push_back(inputFlit[i]);
+                inputFlit[i].resetValid();
+                return;
+            }
+        }
+    }
+}

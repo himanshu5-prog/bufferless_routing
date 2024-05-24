@@ -4,6 +4,7 @@
 #include <iostream>
 #include<deque>
 #include <cstdlib>
+#include <cassert>
 #include "../Flit/flit.hh"
 class Router {
     int xDim;
@@ -41,17 +42,25 @@ class Router {
     Flit getInputFlit(Direction dir);
     void removeInputFlit (Direction dir);
     //--------------------------------------
-    // Functions for outputFlit---------------
+    // Functions for outputFlit-----------------
     void setOutputFlit (Direction dir, Flit f);
     Flit getOutputFlit (Direction dir);
     void removeOutputFlit(Direction dir);
-    //------------------------------------
+    //------------------------------------------
     // Function for inject flit-------------
     void generateInjectFlit();
     Flit getInjectFlit();
     void removeInjectFlit();
-    bool canInjectFlit();
+    bool canInjectFlit(); // Determine if there inject flit can be sent out of router
+    void insertInjectFlit();
     //------------------------------------------------------------    
+    //Functions related to routing
+    Direction getOutputPortDirection(int xDest, int yDest, int id);
+    void processInputPort(); // Create final list of input flit
+    Direction getOldestInputFlit();
+    void resetOldestInputFlit(Direction dir) { inputFlit[dir].resetValid(); };
+    int validInputFlitCount();
+    void acceptInjectFlit();
     
 };
 
