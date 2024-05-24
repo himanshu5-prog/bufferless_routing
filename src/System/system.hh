@@ -10,8 +10,17 @@ class System {
 
     public:
     System();
+    //Functions for cycle variable
     void incrementCycleCount();
     unsigned int getCycleCount();
+    //-----------------------------
+    // Print function
     void print();
+    //------------------------------
+    //Function related to router flit
     void generateInjectFlit();
+    bool isValidInjectFlit(int x, int y);
+    Flit getInputFlit(int i, int j);
+    void printRouterInputFlit(int x, int y);
+    //---------------------------------
 };
