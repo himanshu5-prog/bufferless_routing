@@ -42,7 +42,9 @@ class Flit {
     //----------------------------
     //Functions related to time-------
     void setInjectTime(unsigned int t);
+    unsigned int getInjectTime() {return injectTime;}
     void setCompleteTime(unsigned int t);
+    unsigned int getCompleteTime() { return completeTime;}
     //---------------------------------
     //Print function-------------------
     void print();
