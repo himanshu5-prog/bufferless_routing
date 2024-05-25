@@ -14,17 +14,23 @@ int main(){
     xDim = 4;
     yDim = 4;
     for (unsigned int currentCycle = 0; currentCycle < maxCycleCount; ++currentCycle){
-       //generate flits in router
+       //Check if any incoming flit reached its destination----------
+       s.acceptFlit();
+       //------------------------------------------------------------
+       //Check if core can generate the flit-------------------------
        s.generateInjectFlit();
-
-        for (int i=0; i < xDim; ++i){
-            for (int j=0; j < yDim; ++j){
-                if (s.isValidInjectFlit(i,j)){
-                    s.printRouterInputFlit(i,j);
-                }
-            }
-        }
+       //------------------------------------------------------------
+       //Check if the injected flit can be considered for arbitration
+       s.processInputPort();
+       //-------------------------------------------------------------
+       //Assign output port to the incoming flit----------------------
+       s.assignOutputPort();
+       //-------------------------------------------------------------
+       //Update input ports-------------------------------------------
+       s.assignInputPort();
+       //--------------------------------------------------------------
        s.incrementCycleCount();
+       s.printStats();
     }
     return 0;
 }
