@@ -247,6 +247,7 @@ void Router :: acceptFlit(){
         if (inputFlit[i].getValid()){
             if (inputFlit[i].getDest().x == xDim && inputFlit[i].getDest().y == yDim){
                 //Got the flit.
+                inputFlit[i].setCompleteTime(cycle);
                 coreCompletedFlit.push_back(inputFlit[i]);
                 inputFlit[i].resetValid();
                 stat.completedFlitCount += 1;
@@ -304,4 +305,18 @@ void Router :: printStats(){
     std:: cout << "Total injected Flit: " << stat.injectFlitCount << "\n";
     std :: cout << "Total completed flit: " << stat.completedFlitCount << "\n";
     std :: cout << "---------------------------------------------------------\n";
+}
+
+void Router :: printCompletedFlit(){
+
+    if (coreCompletedFlit.size() == 0){
+        return;
+    }
+
+    std :: deque <Flit> :: iterator itr;
+    std :: cout << " Completed Flit in router (" << xDim << "," << yDim << ")\n";
+
+    for (itr = coreCompletedFlit.begin(); itr != coreCompletedFlit.end(); ++itr){
+        itr->print();
+    }
 }

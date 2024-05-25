@@ -25,6 +25,7 @@ class Router {
     Flit outputFlit[TotalDir];
     Flit coreInjectFlit;
     std::deque<Flit> coreCompletedFlit;
+    bool debugMode;
     public:
     
     //Constructor--------
@@ -73,6 +74,7 @@ class Router {
     Stats stat;
     void printStats();
     std::deque<Flit> getCompletedFlitList() { return coreCompletedFlit;}
+    void printCompletedFlit();
 };
 
 #endif
