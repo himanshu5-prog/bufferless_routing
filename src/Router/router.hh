@@ -6,6 +6,12 @@
 #include <cstdlib>
 #include <cassert>
 #include "../Flit/flit.hh"
+
+struct Stats{
+    unsigned int injectFlitCount;
+    unsigned int completedFlitCount;
+};
+
 class Router {
     int xDim;
     int yDim;
@@ -18,9 +24,7 @@ class Router {
     Flit inputFlit[TotalDir];
     Flit outputFlit[TotalDir];
     Flit coreInjectFlit;
-
     std::deque<Flit> coreCompletedFlit;
-
     public:
     
     //Constructor--------
@@ -58,10 +62,17 @@ class Router {
     Direction getOutputPortDirection(int xDest, int yDest, int id);
     void processInputPort(); // Create final list of input flit
     Direction getOldestInputFlit();
-    void resetOldestInputFlit(Direction dir) { inputFlit[dir].resetValid(); };
+    void resetInputFlit(Direction dir) { inputFlit[dir].resetValid(); }
+    void resetOutputFlit(Direction dir) {outputFlit[dir].resetValid();}
     int validInputFlitCount();
-    void acceptInjectFlit();
-    
+    void acceptFlit();
+    void routeOldestFlit();
+    void routeOtherFlit();
+    void routeFlit();
+    //-----------------------------------------------
+    Stats stat;
+    void printStats();
+    std::deque<Flit> getCompletedFlitList() { return coreCompletedFlit;}
 };
 
 #endif

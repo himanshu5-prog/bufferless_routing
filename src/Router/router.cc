@@ -11,6 +11,8 @@ Router :: Router (){
     cornerRouter = true;
     config.x = 0;
     config.y = 0;
+    stat.completedFlitCount = 0;
+    stat.injectFlitCount = 0;
 }
 
 Router :: Router (int x,  int y){
@@ -28,6 +30,8 @@ Router :: Router (int x,  int y){
         cornerRouter = false;
     }
     cornerRouter = false;
+    stat.completedFlitCount = 0;
+    stat.injectFlitCount = 0;
 }
 //------------------------------------------------------------------
 //Print function--------------------------------------------------------
@@ -112,6 +116,7 @@ void Router :: generateInjectFlit(){
    if ( !(cDest.x == cSrc.x && cDest.y == cSrc.y) ){
 
         coreInjectFlit = fl;
+        stat.injectFlitCount += 1;
    } 
     
 }
@@ -183,7 +188,9 @@ Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
 
     } else if ( xDest < xDim && (yDest < yDim)){
         return (id % 2) ? West : South;
-    }
+    } 
+
+    return East;
 }
 
 void Router :: processInputPort(){
@@ -211,10 +218,9 @@ int Router :: validInputFlitCount(){
 //Gives us oldest flit on input side
 Direction Router :: getOldestInputFlit(){
     
-    assert ( validInputFlitCount() > 1);
     int t;
     bool found = false;
-    Direction dir;
+    Direction dir = East;
     for (int i = 0; i < TotalDir; ++i){
         if (inputFlit[i].getValid() == false){
             continue;
@@ -235,8 +241,7 @@ Direction Router :: getOldestInputFlit(){
 }
 
 // Determine if either of input flit can be accepted
-
-void Router :: acceptInjectFlit(){
+void Router :: acceptFlit(){
 
     for(int i = 0; i < TotalDir; ++i){
         if (inputFlit[i].getValid()){
@@ -244,8 +249,59 @@ void Router :: acceptInjectFlit(){
                 //Got the flit.
                 coreCompletedFlit.push_back(inputFlit[i]);
                 inputFlit[i].resetValid();
+                stat.completedFlitCount += 1;
                 return;
             }
         }
     }
+}
+
+void Router :: routeOldestFlit(){
+    //Route oldest flit and put it to output port
+    if (validInputFlitCount() == 0){
+        return;
+    }
+
+    Direction dir = getOldestInputFlit(); 
+    Direction outDir;
+    int destX, destY, id;
+    
+    assert (inputFlit[dir].getValid());
+
+    destX = inputFlit[dir].getDest().x;
+    destY = inputFlit[dir].getDest().y;
+    id = inputFlit[dir].getId();
+
+    outDir = getOutputPortDirection(destX, destY, id);
+    
+    outputFlit[outDir] = inputFlit[dir];
+    inputFlit[dir].resetValid();
+    
+}
+
+void Router :: routeOtherFlit(){
+    //Route rest of the flit
+    for (int i =0; i < TotalDir; ++i){
+        if ( inputFlit[i].getValid()){
+            for (int j=0; j < TotalDir; ++j){
+                if (outputFlit[j].getValid() == false){
+                    outputFlit[j] = inputFlit[i];
+                    inputFlit[i].resetValid();
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Router :: routeFlit(){
+    routeOldestFlit();
+    routeOtherFlit();
+}
+//----------------------------------------------------------
+void Router :: printStats(){
+    std:: cout << "Router : (" << xDim << " , " << yDim << ")\n";
+    std:: cout << "Total injected Flit: " << stat.injectFlitCount << "\n";
+    std :: cout << "Total completed flit: " << stat.completedFlitCount << "\n";
+    std :: cout << "---------------------------------------------------------\n";
 }

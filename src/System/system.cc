@@ -39,16 +39,16 @@ void System :: print(){
 void System:: generateInjectFlit(){
 
     if (cycle % 10 == 0){
-        for (int i=0; i<4; ++i){
-            for (int j=0; j < 4; ++j){
+        for (int i=0; i<xDim; ++i){
+            for (int j=0; j < yDim; ++j){
                 if (!router[i][j].getInjectFlit().getValid()){
                     router[i][j].generateInjectFlit();
                 }
             }
         }
     } else {
-        for (int i=0; i<4; ++i){
-            for (int j=0; j < 4; ++j){
+        for (int i=0; i < xDim; ++i){
+            for (int j=0; j < yDim; ++j){
                 if (router[i][j].getInjectFlit().getValid()){
                     router[i][j].removeInjectFlit();
                 }
@@ -57,6 +57,62 @@ void System:: generateInjectFlit(){
     }
 }
 
+// All routers will be checked if incoming flit can be accepted
+void System :: acceptFlit(){
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            router[i][j].acceptFlit();
+        }
+    }
+}
+//-----------------------------------------------------------
+// All routers will be assigning output port to incoming flits
+void System :: assignOutputPort(){
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            router[i][j].routeOldestFlit();
+            router[i][j].routeOtherFlit();
+        }
+    }
+}
+//-----------------------------------------------------------
+
+void System :: assignInputPort(){
+
+    for (int i = 0; i < xDim - 1; ++i){
+        for (int j = 0; j < yDim - 1; ++j){
+            
+            // Connection in East-West direction
+            router[i+1][j].setInputFlit(West, router[i][j].getOutputFlit(East));
+            router[i][j].resetOutputFlit(East);
+            
+            router[i][j].setInputFlit(East, router[i+1][j].getOutputFlit(West));
+            router[i+1][j].resetOutputFlit(West);
+
+            // Connection in North-South direction
+            router[i][j].setInputFlit(South, router[i][j+1].getOutputFlit(North));
+            router[i][j+1].resetOutputFlit(North);
+
+            router[i][j+1].setInputFlit(North, router[i][j].getOutputFlit(South));
+            router[i][j].resetOutputFlit(South);
+
+
+
+        }
+    }
+}
+
+//This function checks if injected flitn can be considered for port arbitration
+void System :: processInputPort(){
+
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            router[i][j].processInputPort();
+        }
+    }
+
+}
+//------------------------------------------------------------------------
 bool System :: isValidInjectFlit(int x, int y){
 
     if (router[x][y].getInjectFlit().getValid()){
@@ -73,4 +129,12 @@ Flit System :: getInputFlit(int x, int y){
 void System :: printRouterInputFlit(int x, int y){
     std::cout << "Input Flit in router (" << x << "," << y << ")\n";
     router[x][y].getInjectFlit().print();
+}
+
+void System :: printStats(){
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            router[i][j].printStats();
+        }
+    }
 }
