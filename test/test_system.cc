@@ -28,11 +28,10 @@ int main(){
        //Update input ports-------------------------------------------
        sys.assignInputPort();
        //--------------------------------------------------------------
-       sys.printStats();
-
-       sys.printCompletedFlit();
        sys.incrementCycleCount();
       
     }
+    sys.printStats();
+    sys.printCompletedFlit();
     return 0;
 }
