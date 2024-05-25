@@ -4,33 +4,31 @@
 #include "../src/System/system.hh"
 
 int main(){
-    System s;
-    unsigned int cycleCount;
-    int xDim;
-    int yDim;
+    System sys;
     unsigned int maxCycleCount = 80;
 
     unsigned int currentCycle;
-    xDim = 4;
-    yDim = 4;
+
+    //TODO: Test #1: Create a test in which one router is injecting flit and see how routing is happening.
+    //TODO: Test #2: Two routers are injecting traffic
     for (unsigned int currentCycle = 0; currentCycle < maxCycleCount; ++currentCycle){
        //Check if any incoming flit reached its destination----------
-       s.acceptFlit();
+       sys.acceptFlit();
        //------------------------------------------------------------
        //Check if core can generate the flit-------------------------
-       s.generateInjectFlit();
+       sys.generateInjectFlit();
        //------------------------------------------------------------
        //Check if the injected flit can be considered for arbitration
-       s.processInputPort();
+       sys.processInputPort();
        //-------------------------------------------------------------
        //Assign output port to the incoming flit----------------------
-       s.assignOutputPort();
+       sys.assignOutputPort();
        //-------------------------------------------------------------
        //Update input ports-------------------------------------------
-       s.assignInputPort();
+       sys.assignInputPort();
        //--------------------------------------------------------------
-       s.incrementCycleCount();
-       s.printStats();
+       sys.incrementCycleCount();
+       sys.printStats();
     }
     return 0;
 }
