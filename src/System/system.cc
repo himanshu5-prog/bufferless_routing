@@ -132,9 +132,37 @@ void System :: printRouterInputFlit(int x, int y){
 }
 
 void System :: printStats(){
+    std:: cout << "\nStats at cycle count: " << cycle << "\n";
     for (int i = 0; i < xDim; ++i){
         for (int j = 0; j < yDim; ++j){
             router[i][j].printStats();
+        }
+    }
+}
+
+// Test generation
+void System :: generateInjectFlit_oneRouter(){
+
+    if (cycle % 10 == 0){
+
+        if (router[0][0].getInjectFlit().getValid() == false){
+            router[0][0].generateInjectFlit();
+        }
+    } else {
+        if (router[0][0].getInjectFlit().getValid()){
+            router[0][0].removeInjectFlit();
+        }
+    }
+}
+
+//Print completed
+void System :: printCompletedFlit(){
+
+    std::deque<Flit> comFl;
+    
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            router[i][j].printCompletedFlit();
         }
     }
 }

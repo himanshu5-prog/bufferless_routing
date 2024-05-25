@@ -1,10 +1,12 @@
 #include<iostream>
+#include<deque>
 #include "../Router/router.hh"
 
 class System {
     int xDim;
     int yDim;
     unsigned int cycle;
+    bool debugMode;
     // Create 2d array of routers
     Router router[4][4];
 
@@ -27,7 +29,10 @@ class System {
     Flit getInputFlit(int i, int j);
     void printRouterInputFlit(int x, int y);
     //---------------------------------
+    //---Generate flit test------------
+    void generateInjectFlit_oneRouter();
     void printStats();
+    void printCompletedFlit();
 };
 
 //-----------Mesh Layout------------------
