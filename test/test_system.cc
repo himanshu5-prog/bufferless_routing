@@ -16,7 +16,8 @@ int main(){
        sys.acceptFlit();
        //------------------------------------------------------------
        //Check if core can generate the flit-------------------------
-       sys.generateInjectFlit();
+       sys.generateInjectFlit_oneRouter();
+       //sys.generateInjectFlit();
        //------------------------------------------------------------
        //Check if the injected flit can be considered for arbitration
        sys.processInputPort();
@@ -27,8 +28,11 @@ int main(){
        //Update input ports-------------------------------------------
        sys.assignInputPort();
        //--------------------------------------------------------------
-       sys.incrementCycleCount();
        sys.printStats();
+
+       sys.printCompletedFlit();
+       sys.incrementCycleCount();
+      
     }
     return 0;
 }
