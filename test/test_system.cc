@@ -5,10 +5,10 @@
 
 int main(){
     System sys;
-    unsigned int maxCycleCount = 22;
+    unsigned int maxCycleCount = 15;
 
     unsigned int currentCycle;
-    //sys.setDebugMode();
+   //sys.setDebugMode();
     sys.printRouterForbiddenList();
     //TODO: Test #1: Create a test in which one router is injecting flit and see how routing is happening.
     //TODO: Test #2: Two routers are injecting traffic
@@ -17,8 +17,8 @@ int main(){
        sys.acceptFlit();
        //------------------------------------------------------------
        //Check if core can generate the flit-------------------------
-       //sys.generateInjectFlit_oneRouter();
-       sys.generateInjectFlit();
+       sys.generateInjectFlit_oneRouter();
+       //sys.generateInjectFlit();
        //------------------------------------------------------------
        //Check if the injected flit can be considered for arbitration
        sys.processInputPort();
@@ -33,8 +33,9 @@ int main(){
        sys.incrementCycleCount();
       
     }
-    sys.printStats();
+    //sys.printStats();
     //sys.printCompletedFlit();
+    sys.printHistory();
     sys.getSystemStatUpdate();
 
     std :: cout << "System injected flit: " << sys.stat.injectFlitCount << "\nSystem completed flit: " << sys.stat.completedFlitCount << "\n";

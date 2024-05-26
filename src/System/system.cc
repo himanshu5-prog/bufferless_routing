@@ -260,3 +260,12 @@ void System :: printRouterForbiddenList(){
         }
     }
 }
+
+void System :: printHistory(){
+
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            router[i][j].printHistory();
+        }
+    }
+}

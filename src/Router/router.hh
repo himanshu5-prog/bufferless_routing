@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <cassert>
 #include <set>
+#include <vector>
+#include <map>
 #include "../Flit/flit.hh"
 
 struct Stats{
@@ -13,6 +15,46 @@ struct Stats{
     unsigned int completedFlitCount;
 };
 
+
+enum PortType {
+    Input,
+    Output,
+    Destination,
+    Source,
+    totalPortDir
+
+};
+
+struct History {
+    int xSrc;
+    int ySrc;
+    int xDest;
+    int yDest;
+    int id;
+    int time;
+    PortType portType;
+    Direction dir;
+};
+
+inline std :: string convertPortType2String(PortType p){
+    if (p == Input){
+        return "Input";
+    }
+
+    if (p == Output){
+        return "Output";
+    }
+
+    if (p == Destination){
+        return "Destination";
+    }
+
+    if (p == Source){
+        return "Source";
+    }
+
+    return "Unknown";
+}
 class Router {
     int xDim;
     int yDim;
@@ -27,6 +69,7 @@ class Router {
     std::deque<Flit> coreCompletedFlit;
     bool debugMode;
     std :: set <int> forbiddenPort;
+    std :: vector <History> history;
 
     public:
     
@@ -84,6 +127,7 @@ class Router {
     void isCornerEdgeRouter();
     bool IsForbiddenPort (int i);
     void printForbiddenList();
+    void printHistory();
 };
 
 #endif

@@ -121,6 +121,23 @@ void Router :: generateInjectFlit(){
             coreInjectFlit.print();
 
         }
+        //-----------------------------------
+        // Flit is getting injected.
+        History hist;
+
+        hist.xSrc = coreInjectFlit.getSrc().x;
+        hist.ySrc = coreInjectFlit.getSrc().y;
+
+        hist.xDest = coreInjectFlit.getDest().x;
+        hist.yDest = coreInjectFlit.getDest().y;
+
+        hist.dir = East;
+        hist.id = coreInjectFlit.getId();
+        hist.portType = Source;
+        hist.time = getCycleCount();
+
+        history.push_back(hist);
+        //------------------------------------
    } 
     
 }
@@ -164,6 +181,26 @@ void Router :: insertInjectFlit(){
         }
         if (!inputFlit[i].getValid()){
                inputFlit[i] = coreInjectFlit;
+               //--------------------------------
+               // inject flit is getting assigned to input port
+               /*
+               History hist;
+
+               hist.xSrc = coreInjectFlit.getSrc().x;
+               hist.ySrc = coreInjectFlit.getSrc().y;
+
+               hist.xDest = coreInjectFlit.getDest().x;
+               hist.yDest = coreInjectFlit.getDest().y;
+
+               hist.dir = (Direction)i;
+               hist.id = coreInjectFlit.getId();
+               hist.portType = Input;
+               hist.time = getCycleCount();
+
+               history.push_back(hist);
+               */
+               //----------------------------------------
+
                coreInjectFlit.resetValid();
                return;
         }
@@ -231,6 +268,26 @@ void Router :: processInputPort(){
     if (canInjectFlit()){
         insertInjectFlit();
     }
+
+    for (int i = 0; i < TotalDir; ++i){
+        if (inputFlit[i].getValid()){
+        //---------------------------------
+        // Checking every input port
+        History hist;
+        hist.xSrc = inputFlit[i].getSrc().x;
+        hist.ySrc = inputFlit[i].getSrc().y;
+        hist.xDest = inputFlit[i].getDest().x;
+        hist.yDest = inputFlit[i].getDest().y;
+
+        hist.id = inputFlit[i].getId();
+        hist.portType = Input;
+        hist.dir = Direction(i);
+        hist.time = getCycleCount();
+
+        history.push_back(hist);
+        //---------------------------------
+        }
+    }
 }
 
 // determine how many input flits are valid
@@ -244,6 +301,7 @@ int Router :: validInputFlitCount(){
         }
 
         if (inputFlit[i].getValid()){
+         
             x += 1;
         }
     }
@@ -316,6 +374,23 @@ void Router :: acceptFlit(){
                     std::cout << "(Router/acceptFlit) :: Router: (" << xDim << "," << yDim  <<" Flit accepted:\n";
                     inputFlit[i].print();
                 }
+                //---------------------------------------
+                // Flit has reached the destination
+                History hist;
+           
+                hist.xSrc = inputFlit[i].getSrc().x;
+                hist.ySrc = inputFlit[i].getSrc().y;
+
+                hist.xDest = inputFlit[i].getDest().x;
+                hist.yDest = inputFlit[i].getDest().y;
+
+                hist.dir = (Direction)i;
+                hist.id = inputFlit[i].getId();
+                hist.portType = Destination;
+                hist.time = getCycleCount();
+
+                history.push_back(hist);
+                //--------------------------------
                 coreCompletedFlit.push_back(inputFlit[i]);
                 inputFlit[i].resetValid();
                 stat.completedFlitCount += 1;
@@ -349,12 +424,26 @@ void Router :: routeOldestFlit(){
 
     outDir = getOutputPortDirection(destX, destY, id);
     
+
     if (debugMode){
         std::cout << "(routeOldestFlit) :: Router: (" << xDim << "," << yDim << "): Output port selected: " << convert2Direction(outDir) << "\n";
     }
 
     outputFlit[outDir] = inputFlit[dir];
+    //-------------------------------------
+    // Oldest input flit is getting assigned to output
+    History hist;
+    hist.xSrc = inputFlit[dir].getSrc().x;
+    hist.ySrc = inputFlit[dir].getSrc().y;
+    hist.xDest = inputFlit[dir].getDest().x;
+    hist.yDest = inputFlit[dir].getDest().y;
 
+    hist.id = inputFlit[dir].getId();
+    hist.time = getCycleCount();
+    hist.portType = Output;
+    hist.dir = (Direction)outDir;
+    history.push_back(hist);
+    //------------------------------------
     if (debugMode){
         std :: cout << "(routeOldestFlit) :: Router: (" << xDim << "," << yDim << "): Output flit (after port assignment):\n";
         outputFlit[outDir].print();
@@ -393,7 +482,24 @@ void Router :: routeOtherFlit(){
 
                         std :: cout << "(routeOtherFlit) :: Router: (" << xDim << "," << yDim << "): Output flit: \n";
                         outputFlit[j].print();
-                    }                    
+                    } 
+
+                    //-----------------------------
+                    // Assigning output port to input flit
+                    History hist;
+                    hist.xSrc = inputFlit[i].getSrc().x;
+                    hist.xDest = inputFlit[i].getSrc().y;
+
+                    hist.xDest = inputFlit[i].getDest().x;
+                    hist.yDest = inputFlit[i].getDest().y;
+
+                    hist.dir = (Direction) j;
+                    hist.portType = Output;
+                    hist.id = inputFlit[i].getId();
+                    hist.time = getCycleCount();
+
+                    history.push_back(hist);
+                    //------------------------------           
                     inputFlit[i].resetValid();
                     break;
                 }
@@ -527,5 +633,15 @@ void Router :: printForbiddenList(){
             std :: cout << *itr << ", ";
         }
         std :: cout << "\n";
+    }
+}
+
+void Router :: printHistory(){
+    std :: cout << "Router (" << xDim << "," << yDim << ") history:\n";
+    for (int i =0; i < history.size(); ++i){
+        
+        std :: cout << "Source: (" << history[i].xSrc << "," << history[i].ySrc << "), Destination: (" << history[i].xDest << "," << history[i].yDest << ") ";
+        std :: cout << " id: " << history[i].id << ", portType: " << convertPortType2String(history[i].portType) << ", direction: " << convert2Direction(history[i].dir) << ", time: " << history[i].time << "\n";
+
     }
 }

@@ -39,6 +39,7 @@ class System {
     void printValidInputFlit();
     void printRouterForbiddenList();
     void setDebugMode();
+    void printHistory();
 
 
 };
