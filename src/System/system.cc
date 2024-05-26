@@ -9,6 +9,7 @@ System :: System(){
         for (int j = 0; j < yDim; ++j){
             router[i][j].setDim(i,j);
             router[i][j].setConfig(xDim,yDim);
+            router[i][j].isCornerEdgeRouter();
         }
     }
 
@@ -245,6 +246,17 @@ void System :: printValidInputFlit(){
     for ( int i =0; i < xDim; ++i){
         for ( int j = 0; j < yDim; ++j){
             router[i][j].printValidInputFlit();
+        }
+    }
+}
+
+void System :: printRouterForbiddenList(){
+    if (debugMode && cycle == 0){
+        for (int i = 0; i < xDim; ++i){
+            for (int j = 0; j < yDim; ++j){
+                std :: cout << "Forbidden list for router ( " << i << "," << j << ")\n";
+                router[i][j].printForbiddenList();
+            }
         }
     }
 }

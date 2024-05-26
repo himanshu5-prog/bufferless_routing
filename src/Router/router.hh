@@ -17,8 +17,7 @@ class Router {
     int xDim;
     int yDim;
     Coord config;
-    bool cornerRouter;
-    bool edgeRouter;
+    int cornerEdge;
     int sentFlitCount;
     unsigned int id;
     unsigned int cycle;
@@ -28,7 +27,7 @@ class Router {
     std::deque<Flit> coreCompletedFlit;
     bool debugMode;
     std :: set <int> forbiddenPort;
-    
+
     public:
     
     //Constructor--------
@@ -82,8 +81,9 @@ class Router {
 
     void setDebugMode();
 
-    bool isCornerRouter();
-    bool isEdgeRouter();
+    void isCornerEdgeRouter();
+    bool IsForbiddenPort (int i);
+    void printForbiddenList();
 };
 
 #endif

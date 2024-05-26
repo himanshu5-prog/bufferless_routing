@@ -7,15 +7,11 @@ Router :: Router (){
     sentFlitCount = 0;
     id = 0;
     cycle = 0;
-    edgeRouter = true;
-    cornerRouter = true;
+    
     config.x = 0;
     config.y = 0;
     stat.completedFlitCount = 0;
     stat.injectFlitCount = 0;
-
-    cornerRouter = isCornerRouter();
-    edgeRouter = isEdgeRouter();
 }
 
 Router :: Router (int x,  int y){
@@ -27,17 +23,9 @@ Router :: Router (int x,  int y){
     config.x = 0;
     config.y = 0;
 
-    if (xDim == yDim){
-        cornerRouter = true;
-    } else {
-        cornerRouter = false;
-    }
-    cornerRouter = false;
+    isCornerEdgeRouter();
     stat.completedFlitCount = 0;
     stat.injectFlitCount = 0;
-
-    cornerRouter = isCornerRouter();
-    edgeRouter = isEdgeRouter();
 }
 
 void Router :: setDebugMode(){
@@ -141,6 +129,12 @@ bool Router :: canInjectFlit(){
     
     if (coreInjectFlit.getValid()) {
         for (int i=0; i< TotalDir; ++i){
+
+            if (IsForbiddenPort(i)){
+                //The port cannot be used.
+                continue;
+            }
+
             if (!inputFlit[i].getValid()){
                 //Empty flit
                 return true;
@@ -164,6 +158,10 @@ void Router :: insertInjectFlit(){
     assert (coreInjectFlit.getValid());
 
     for (int i=0; i< TotalDir; ++i){
+
+        if (IsForbiddenPort(i)){
+            continue;
+        }
         if (!inputFlit[i].getValid()){
                inputFlit[i] = coreInjectFlit;
                coreInjectFlit.resetValid();
@@ -192,7 +190,7 @@ void Router :: printValidInputFlit(){
 Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
 
     if (xDest == xDim){
-        assert (yDest != yDim);
+        //assert (yDest != yDim);
         if (yDest > yDim){
             return South;
 
@@ -201,7 +199,7 @@ Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
         }
 
     } else if ( yDest == yDim){
-        assert(xDest != xDim);
+        //assert(xDest != xDim);
 
         if (xDest > xDim){
             return East;
@@ -239,6 +237,12 @@ void Router :: processInputPort(){
 int Router :: validInputFlitCount(){
     int x  = 0;
     for (int i = 0; i < TotalDir; ++i){
+
+        if (IsForbiddenPort(i)){
+            assert(inputFlit[i].getValid() == false);
+            continue;
+        }
+
         if (inputFlit[i].getValid()){
             x += 1;
         }
@@ -254,6 +258,12 @@ Direction Router :: getOldestInputFlit(){
     bool found = false;
     Direction dir = East;
     for (int i = 0; i < TotalDir; ++i){
+
+        if (IsForbiddenPort(i)){
+            assert (inputFlit[i].getValid() == false);
+            continue;
+        }
+
         if (inputFlit[i].getValid() == false){
             continue;
         }
@@ -276,6 +286,27 @@ Direction Router :: getOldestInputFlit(){
 void Router :: acceptFlit(){
 
     for(int i = 0; i < TotalDir; ++i){
+
+        if (IsForbiddenPort(i)){
+            
+            if (inputFlit[i].getValid()){
+                std :: cout << "Port: " << i << " is forbidden in router ( " << xDim << "," << yDim << ")\n";
+
+                std :: set <int> :: iterator itr;
+                std :: cout << "Size of forbidden port: " << forbiddenPort.size() << "\n";
+
+                if (forbiddenPort.size() > 0) {
+                    for (itr = forbiddenPort.begin(); itr != forbiddenPort.end(); ++itr){
+                        std :: cout << *itr << "\n";
+                    }
+                }
+            }
+
+            
+            assert (inputFlit[i].getValid() == false);
+            continue;
+        }
+
         if (inputFlit[i].getValid()){
             if (inputFlit[i].getDest().x == xDim && inputFlit[i].getDest().y == yDim){
                 //Got the flit.
@@ -335,6 +366,12 @@ void Router :: routeOldestFlit(){
 void Router :: routeOtherFlit(){
     //Route rest of the flit
     for (int i =0; i < TotalDir; ++i){
+
+        if (IsForbiddenPort(i)){
+            assert (inputFlit[i].getValid() == false);
+            continue;
+        }
+
         if ( inputFlit[i].getValid()){
             
             if (debugMode){
@@ -343,6 +380,11 @@ void Router :: routeOtherFlit(){
             }
 
             for (int j=0; j < TotalDir; ++j){
+
+                if (IsForbiddenPort(j)){
+                    continue;
+                }
+
                 if (outputFlit[j].getValid() == false){
                     outputFlit[j] = inputFlit[i];
 
@@ -364,54 +406,84 @@ void Router :: routeFlit(){
     routeOldestFlit();
     routeOtherFlit();
 }
-
-bool Router :: isCornerRouter(){
+/*
+  East, : 0
+    West,: 1
+    North, : 2
+    South, : 3
+    TotalDir
+*/
+void Router :: isCornerEdgeRouter(){
 
     if ( xDim == 0 && yDim == 0){
         // Upper left corner
         //Forbidden port: West, North
-        return true;
+        forbiddenPort.insert(1);
+        forbiddenPort.insert(2);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at upper left corner.\n";
     }
     
-    if ( xDim == (config.x - 1) && yDim == 0){
-        return true;
+    else if ( xDim == (config.x - 1) && yDim == 0){
+        // Upper right corner
+        //Forbidden port: East, North
+        forbiddenPort.insert(0);
+        forbiddenPort.insert(2);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at upper right corner.\n";
     }
 
-    if ( xDim == 0 && yDim == (config.y - 1)){
-        return true;
+    else if ( xDim == 0 && yDim == (config.y - 1)){
+        //Lower left corner
+        // Forbidden port: West, South
+        forbiddenPort.insert(1);
+        forbiddenPort.insert(3);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at lower left corner.\n";
     }
 
-    if ( (xDim == (config.x -1) ) && (yDim == (config.y - 1))){
-        return true;
+    else if ( (xDim == (config.x -1) ) && (yDim == (config.y - 1))){
+        // Lower right corner
+        //Forbidden port: East, South
+        forbiddenPort.insert(0);
+        forbiddenPort.insert(3);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at lower right corner.\n";
+        
     }
 
-    return false;
+    //Check if the router is located on edge
+    else if ( xDim == 0){
+        //Left edge
+        // Forbidden port: West
+        forbiddenPort.insert(1);
 
-}
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at left edge.\n";
+    }
 
-bool Router :: isEdgeRouter(){
-
-    if (xDim == 0 && isCornerRouter() == false){
-        // Left edge
-        return true;
-    } 
-
-    if ( xDim == (config.x - 1) && isCornerRouter() == false){
+    else if (xDim == config.x - 1){
         // Right edge
-        return true;
+        // Forbidden port: East
+        forbiddenPort.insert(0);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at right edge.\n";
+        
     }
 
-    if ( yDim == 0 && isCornerRouter() == false){
-        // Upper edge
-        return true;
+    else if (yDim == 0){
+        //Upper edge
+        // Forbidden port: North
+        forbiddenPort.insert(2);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at upper edge.\n";
     }
 
-    if ( yDim == (config.y -1) && isCornerRouter()){
-        // Lower edge
-        return true;
+    else if (yDim == config.y - 1){
+        //Lower edge
+        //Forbidden port: South
+        forbiddenPort.insert(3);
+        std :: cout << "Router (" << xDim << "," << yDim << ") is at lower edge.\n";
+        
+    } else {
+        std :: cout << "Router (" << xDim << "," << yDim << ") is not corner or edge router.\n";
     }
 
-    return false;
+    
+
 }
 //----------------------------------------------------------
 void Router :: printStats(){
@@ -432,5 +504,28 @@ void Router :: printCompletedFlit(){
 
     for (itr = coreCompletedFlit.begin(); itr != coreCompletedFlit.end(); ++itr){
         itr->print();
+    }
+}
+
+bool Router :: IsForbiddenPort(int i){
+
+    if (forbiddenPort.find(i) != forbiddenPort.end()){
+        return true; //Found port in forbidden list
+    }
+
+    return false;
+}
+
+void Router :: printForbiddenList(){
+
+    std :: cout << "Forbidden list size: " << forbiddenPort.size() << "\n";
+
+    if (forbiddenPort.size()){
+        std :: set <int> :: iterator itr;
+
+        for (itr = forbiddenPort.begin(); itr != forbiddenPort.end(); ++itr){
+            std :: cout << *itr << ", ";
+        }
+        std :: cout << "\n";
     }
 }
