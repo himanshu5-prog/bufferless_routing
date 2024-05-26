@@ -2,7 +2,7 @@
 #define _FLIT_
 
 #include<iostream>
-
+#include <string>
 enum Direction {
     East,
     West,
@@ -11,6 +11,19 @@ enum Direction {
     TotalDir
 };
 
+inline std::string convert2Direction(Direction dir){
+   if (dir == East){
+        return "East";
+   } else if (dir == West){
+        return "West";
+   } else if ( dir == North){
+        return "North";
+   } else if ( dir == South){
+        return "South";
+   }
+
+   return "Whatever";
+}
 struct Coord {
     int x;
     int y;
