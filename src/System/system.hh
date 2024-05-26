@@ -31,8 +31,11 @@ class System {
     //---------------------------------
     //---Generate flit test------------
     void generateInjectFlit_oneRouter();
+    //---------------------------------
     void printStats();
     void printCompletedFlit();
+    void printValidInputFlit();
+    void setDebugMode();
 };
 
 //-----------Mesh Layout------------------

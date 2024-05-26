@@ -28,6 +28,16 @@ unsigned int System :: getCycleCount(){
     return cycle;
 }
 //------------------------------------------
+
+void System :: setDebugMode(){
+    debugMode = true;
+
+    for (int i = 0; i < xDim; ++i){
+        for ( int j = 0; j < yDim; ++j){
+            router[i][j].setDebugMode();
+        }
+    }
+}
 // Print function---------------------------------------------
 void System :: print(){
     std :: cout << "This system has 16 routers in 4x4 mesh.\n";
@@ -85,20 +95,77 @@ void System :: assignInputPort(){
             // Connection in East-West direction
             router[i+1][j].setInputFlit(West, router[i][j].getOutputFlit(East));
             router[i][j].resetOutputFlit(East);
+
+            if (debugMode && cycle == 0){
+                std :: cout << "East --> West connection for Router : (" << i << "," << j << ") --> Router: (" << i+1 << "," << j <<")\n";
+            }
             
             router[i][j].setInputFlit(East, router[i+1][j].getOutputFlit(West));
             router[i+1][j].resetOutputFlit(West);
+
+             if (debugMode && cycle == 0){
+                std :: cout << "West --> East connection for Router : (" << i+1 << "," << j << ") --> Router: (" << i << "," << j <<")\n";
+            }
 
             // Connection in North-South direction
             router[i][j].setInputFlit(South, router[i][j+1].getOutputFlit(North));
             router[i][j+1].resetOutputFlit(North);
 
+            if (debugMode && cycle == 0){
+                std :: cout << " North  --> South connection for Router: (" << i << "," << j+1 << ") --> Router: (" << i << "," << j <<")\n";
+            }
+
             router[i][j+1].setInputFlit(North, router[i][j].getOutputFlit(South));
             router[i][j].resetOutputFlit(South);
+
+            if (debugMode && cycle == 0){
+                std :: cout << "South --> North connection for Router: (" << i << "," << j << ") --> Router: (" << i << "," << j+1 << ")\n"; 
+            }
 
 
 
         }
+    }
+
+    // Making missing links
+
+    for (int i = 0; i < xDim -1; ++i){
+        int  j = yDim-1;
+
+        // Connection in East-West direction
+        router[i+1][j].setInputFlit(West, router[i][j].getOutputFlit(East));
+        router[i][j].resetOutputFlit(East);
+
+        if (debugMode && cycle == 0){
+            std :: cout << "East --> West connection for Router : (" << i << "," << j << ") --> Router: (" << i+1 << "," << j <<")\n";
+        }
+
+        router[i][j].setInputFlit(East, router[i+1][j].getOutputFlit(West));
+        router[i+1][j].resetOutputFlit(West);
+
+        if (debugMode && cycle == 0){
+            std :: cout << "West --> East connection for Router : (" << i+1 << "," << j << ") --> Router: (" << i << "," << j <<")\n";
+        }
+    }
+
+    for (int j = 0; j < yDim -1; ++j){
+        int i = xDim - 1;
+
+        // Connection in North-South direction
+        router[i][j].setInputFlit(South, router[i][j+1].getOutputFlit(North));
+        router[i][j+1].resetOutputFlit(North);
+
+        if (debugMode && cycle == 0){
+            std :: cout << " North  --> South connection for Router: (" << i << "," << j+1 << ") --> Router: (" << i << "," << j <<")\n";
+        }
+
+        router[i][j+1].setInputFlit(North, router[i][j].getOutputFlit(South));
+        router[i][j].resetOutputFlit(South);
+
+        if (debugMode && cycle == 0){
+            std :: cout << "South --> North connection for Router: (" << i << "," << j << ") --> Router: (" << i << "," << j+1 << ")\n"; 
+        }
+
     }
 }
 
@@ -148,14 +215,10 @@ void System :: generateInjectFlit_oneRouter(){
         if (router[0][0].getInjectFlit().getValid() == false){
             router[0][0].generateInjectFlit();
         }
-    } else {
-        if (router[0][0].getInjectFlit().getValid()){
-            router[0][0].removeInjectFlit();
-        }
-    }
+    } 
 }
 
-//Print completed
+//Print completed flit
 void System :: printCompletedFlit(){
 
     std::deque<Flit> comFl;
@@ -163,6 +226,14 @@ void System :: printCompletedFlit(){
     for (int i = 0; i < xDim; ++i){
         for (int j = 0; j < yDim; ++j){
             router[i][j].printCompletedFlit();
+        }
+    }
+}
+
+void System :: printValidInputFlit(){
+    for ( int i =0; i < xDim; ++i){
+        for ( int j = 0; j < yDim; ++j){
+            router[i][j].printValidInputFlit();
         }
     }
 }
