@@ -5,6 +5,7 @@
 #include<deque>
 #include <cstdlib>
 #include <cassert>
+#include <set>
 #include "../Flit/flit.hh"
 
 struct Stats{
@@ -26,6 +27,8 @@ class Router {
     Flit coreInjectFlit;
     std::deque<Flit> coreCompletedFlit;
     bool debugMode;
+    std :: set <int> forbiddenPort;
+    
     public:
     
     //Constructor--------
@@ -46,6 +49,7 @@ class Router {
     void setInputFlit(Direction dir, Flit f);
     Flit getInputFlit(Direction dir);
     void removeInputFlit (Direction dir);
+    void printValidInputFlit();
     //--------------------------------------
     // Functions for outputFlit-----------------
     void setOutputFlit (Direction dir, Flit f);
@@ -75,6 +79,11 @@ class Router {
     void printStats();
     std::deque<Flit> getCompletedFlitList() { return coreCompletedFlit;}
     void printCompletedFlit();
+
+    void setDebugMode();
+
+    bool isCornerRouter();
+    bool isEdgeRouter();
 };
 
 #endif

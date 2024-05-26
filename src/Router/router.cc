@@ -13,6 +13,9 @@ Router :: Router (){
     config.y = 0;
     stat.completedFlitCount = 0;
     stat.injectFlitCount = 0;
+
+    cornerRouter = isCornerRouter();
+    edgeRouter = isEdgeRouter();
 }
 
 Router :: Router (int x,  int y){
@@ -32,6 +35,13 @@ Router :: Router (int x,  int y){
     cornerRouter = false;
     stat.completedFlitCount = 0;
     stat.injectFlitCount = 0;
+
+    cornerRouter = isCornerRouter();
+    edgeRouter = isEdgeRouter();
+}
+
+void Router :: setDebugMode(){
+    debugMode = true;
 }
 //------------------------------------------------------------------
 //Print function--------------------------------------------------------
@@ -117,6 +127,12 @@ void Router :: generateInjectFlit(){
 
         coreInjectFlit = fl;
         stat.injectFlitCount += 1;
+
+        if (debugMode){
+            std :: cout << "(generateInjectFlit):: Router (" << xDim << "," << yDim << ") Injected flit:\n";
+            coreInjectFlit.print();
+
+        }
    } 
     
 }
@@ -155,6 +171,22 @@ void Router :: insertInjectFlit(){
         }
     }
 }
+
+void Router :: printValidInputFlit(){
+    
+    if (validInputFlitCount() == 0){
+        return;
+    }
+
+    std::cout << "\n Input flit for Router (" << xDim << "," << yDim << ") in cycle: " << cycle << "\n";
+    for (int i = 0; i < TotalDir; ++i){
+        if (inputFlit[i].getValid()){
+            inputFlit[i].print();
+            std :: cout << "Direction: " << convert2Direction( (Direction)i) << "\n";
+        }
+    }
+    std :: cout << "-------------------------------------------------------\n";
+}
 //----------------------------------------------------
 //Functions related to Routing
 Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
@@ -162,10 +194,10 @@ Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
     if (xDest == xDim){
         assert (yDest != yDim);
         if (yDest > yDim){
-            return North;
+            return South;
 
         } else if ( yDest < yDim){
-            return South;
+            return North;
         }
 
     } else if ( yDest == yDim){
@@ -178,16 +210,16 @@ Direction Router :: getOutputPortDirection(int xDest, int yDest, int id){
             return West;
         }
     } else if ( (xDest > xDim) && (yDest > yDim) ){
-        return (id % 2) ? East : North;
+        return (id % 2) ? East : South;
 
     } else if ((xDest > xDim) && (yDest < yDim) ){
-        return  (id % 2)? East: South;
+        return  (id % 2)? East: North;
 
     } else if ((xDest < xDim) && (yDest > yDim)){
-        return (id %2 ) ? West : North;
+        return (id %2 ) ? West : South;
 
     } else if ( xDest < xDim && (yDest < yDim)){
-        return (id % 2) ? West : South;
+        return (id % 2) ? West : North;
     } 
 
     return East;
@@ -248,6 +280,11 @@ void Router :: acceptFlit(){
             if (inputFlit[i].getDest().x == xDim && inputFlit[i].getDest().y == yDim){
                 //Got the flit.
                 inputFlit[i].setCompleteTime(cycle);
+
+                if (debugMode){
+                    std::cout << "(Router/acceptFlit) :: Router: (" << xDim << "," << yDim  <<" Flit accepted:\n";
+                    inputFlit[i].print();
+                }
                 coreCompletedFlit.push_back(inputFlit[i]);
                 inputFlit[i].resetValid();
                 stat.completedFlitCount += 1;
@@ -264,6 +301,12 @@ void Router :: routeOldestFlit(){
     }
 
     Direction dir = getOldestInputFlit(); 
+
+    if (debugMode){
+        std:: cout << " (routeOldestFlit) :: Router: (" << xDim << "," << yDim << "): Oldest input is present in direction: " << convert2Direction(dir) << "\n";
+        std :: cout << "Oldest Input flit:\n ";
+        inputFlit[dir].print();
+    }
     Direction outDir;
     int destX, destY, id;
     
@@ -275,7 +318,16 @@ void Router :: routeOldestFlit(){
 
     outDir = getOutputPortDirection(destX, destY, id);
     
+    if (debugMode){
+        std::cout << "(routeOldestFlit) :: Router: (" << xDim << "," << yDim << "): Output port selected: " << convert2Direction(outDir) << "\n";
+    }
+
     outputFlit[outDir] = inputFlit[dir];
+
+    if (debugMode){
+        std :: cout << "(routeOldestFlit) :: Router: (" << xDim << "," << yDim << "): Output flit (after port assignment):\n";
+        outputFlit[outDir].print();
+    }
     inputFlit[dir].resetValid();
     
 }
@@ -284,9 +336,22 @@ void Router :: routeOtherFlit(){
     //Route rest of the flit
     for (int i =0; i < TotalDir; ++i){
         if ( inputFlit[i].getValid()){
+            
+            if (debugMode){
+                std:: cout << "(routeOtherFlit) :: Router: (" << xDim << "," << yDim << "): Input flit direction: " << convert2Direction((Direction)i ) << "\nInputFlit: \n";
+                inputFlit[i].print(); 
+            }
+
             for (int j=0; j < TotalDir; ++j){
                 if (outputFlit[j].getValid() == false){
                     outputFlit[j] = inputFlit[i];
+
+                    if (debugMode){
+                        std :: cout << "(routeOtherFlit) :: Router: (" << xDim << "," << yDim << "), output direction: " << convert2Direction((Direction)j) << "\n";
+
+                        std :: cout << "(routeOtherFlit) :: Router: (" << xDim << "," << yDim << "): Output flit: \n";
+                        outputFlit[j].print();
+                    }                    
                     inputFlit[i].resetValid();
                     break;
                 }
@@ -298,6 +363,55 @@ void Router :: routeOtherFlit(){
 void Router :: routeFlit(){
     routeOldestFlit();
     routeOtherFlit();
+}
+
+bool Router :: isCornerRouter(){
+
+    if ( xDim == 0 && yDim == 0){
+        // Upper left corner
+        //Forbidden port: West, North
+        return true;
+    }
+    
+    if ( xDim == (config.x - 1) && yDim == 0){
+        return true;
+    }
+
+    if ( xDim == 0 && yDim == (config.y - 1)){
+        return true;
+    }
+
+    if ( (xDim == (config.x -1) ) && (yDim == (config.y - 1))){
+        return true;
+    }
+
+    return false;
+
+}
+
+bool Router :: isEdgeRouter(){
+
+    if (xDim == 0 && isCornerRouter() == false){
+        // Left edge
+        return true;
+    } 
+
+    if ( xDim == (config.x - 1) && isCornerRouter() == false){
+        // Right edge
+        return true;
+    }
+
+    if ( yDim == 0 && isCornerRouter() == false){
+        // Upper edge
+        return true;
+    }
+
+    if ( yDim == (config.y -1) && isCornerRouter()){
+        // Lower edge
+        return true;
+    }
+
+    return false;
 }
 //----------------------------------------------------------
 void Router :: printStats(){
