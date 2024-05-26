@@ -8,7 +8,7 @@ int main(){
     unsigned int maxCycleCount = 80;
 
     unsigned int currentCycle;
-
+    sys.setDebugMode();
     //TODO: Test #1: Create a test in which one router is injecting flit and see how routing is happening.
     //TODO: Test #2: Two routers are injecting traffic
     for (unsigned int currentCycle = 0; currentCycle < maxCycleCount; ++currentCycle){
@@ -22,6 +22,7 @@ int main(){
        //Check if the injected flit can be considered for arbitration
        sys.processInputPort();
        //-------------------------------------------------------------
+       sys.printValidInputFlit();
        //Assign output port to the incoming flit----------------------
        sys.assignOutputPort();
        //-------------------------------------------------------------
