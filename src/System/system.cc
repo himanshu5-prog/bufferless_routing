@@ -11,6 +11,9 @@ System :: System(){
             router[i][j].setConfig(xDim,yDim);
         }
     }
+
+    stat.completedFlitCount = 0;
+    stat.injectFlitCount = 0;
 }
 
 //Function related to cycle count------------
@@ -206,7 +209,15 @@ void System :: printStats(){
         }
     }
 }
+ void System :: getSystemStatUpdate(){
 
+    for (int i = 0; i < xDim; ++i){
+        for (int j = 0; j < yDim; ++j){
+            stat.completedFlitCount += router[i][j].stat.completedFlitCount;
+            stat.injectFlitCount    += router[i][j].stat.injectFlitCount;
+        }
+    }
+ }
 // Test generation
 void System :: generateInjectFlit_oneRouter(){
 

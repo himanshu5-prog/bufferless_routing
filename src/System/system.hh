@@ -9,7 +9,7 @@ class System {
     bool debugMode;
     // Create 2d array of routers
     Router router[4][4];
-
+   
     public:
     System();
     //Functions for cycle variable
@@ -32,10 +32,13 @@ class System {
     //---Generate flit test------------
     void generateInjectFlit_oneRouter();
     //---------------------------------
+    Stats stat;
+    void getSystemStatUpdate();
     void printStats();
     void printCompletedFlit();
     void printValidInputFlit();
     void setDebugMode();
+
 };
 
 //-----------Mesh Layout------------------

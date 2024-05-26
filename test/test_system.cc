@@ -34,5 +34,9 @@ int main(){
     }
     sys.printStats();
     sys.printCompletedFlit();
-    return 0;
+    sys.getSystemStatUpdate();
+
+    std :: cout << "System injected flit: " << sys.stat.injectFlitCount << "\nSystem completed flit: " << sys.stat.completedFlitCount << "\n";
+    return 0;;
+
 }
