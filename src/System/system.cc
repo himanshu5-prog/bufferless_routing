@@ -59,6 +59,7 @@ void System :: print(){
     router[2][3].print();
 }
 //--------------------------------------------------------
+// Each router generates flit every 10 cycles.
 void System:: generateInjectFlit(){
 
     if (cycle % 10 == 0){
@@ -228,7 +229,8 @@ void System :: printStats(){
         }
     }
  }
-// Test generation
+ //---------------------------------------------------
+// Test generation. Router[0][0] generates flit every 10 cycles.
 void System :: generateInjectFlit_oneRouter(){
 
     if (cycle % 10 == 0){
@@ -238,8 +240,8 @@ void System :: generateInjectFlit_oneRouter(){
         }
     } 
 }
-
-//Print completed flit
+//--------------------------------------------------------------
+//Print completed flit----------------------------------------
 void System :: printCompletedFlit(){
 
     std::deque<Flit> comFl;
@@ -250,7 +252,7 @@ void System :: printCompletedFlit(){
         }
     }
 }
-
+//----------------------------------------------------------
 void System :: printValidInputFlit(){
     for ( int i =0; i < xDim; ++i){
         for ( int j = 0; j < yDim; ++j){
