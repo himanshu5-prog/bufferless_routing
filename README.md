@@ -15,6 +15,7 @@ Code base:
 
 3) The code will print out the port connection, forbidden port list and history in each of router.
 
+4) All tests are in test/directory. For system level test, test/test_system.cpp should be run.
 
 Resources:
 
