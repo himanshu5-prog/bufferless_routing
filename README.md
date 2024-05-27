@@ -17,6 +17,11 @@ Code base:
 
 4) All tests are in test/directory. For system level test, test/test_system.cpp should be run.
 
+Running the code:
+
+> make
+> ./systemSim > log
+
 Resources:
 
 i) Research paper: https://cfallin.org/pubs/tr-2010-001-chipper.pdf
