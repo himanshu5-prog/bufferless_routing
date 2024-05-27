@@ -15,9 +15,9 @@ Code base:
 
 3) There are two command line arguments that can be provided:
    
-    i) debugMode (0/1): Default is 0. Set it to 1 to print verbose log file.
+    i) --debugMode (0/1): Default is 0. Set it to 1 to print verbose log file.
    
-    ii) maxCycleCount (unsigned int): Default is 16.
+    ii) --maxCycleCount (unsigned int): Default is 16.
 
 5) The code will print out the port connection, forbidden port list and history in each of router.
 
