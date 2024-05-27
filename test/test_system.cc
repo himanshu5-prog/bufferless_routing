@@ -8,9 +8,10 @@ int main(){
     unsigned int maxCycleCount = 16;
 
     unsigned int currentCycle;
+    sys.setMaxCycleCount(maxCycleCount);
    //sys.setDebugMode();
     sys.printRouterForbiddenList();
-    for (unsigned int currentCycle = 0; currentCycle < maxCycleCount; ++currentCycle){
+    for (unsigned int currentCycle = 0; currentCycle < sys.getMaxCycleCount(); ++currentCycle){
        //Check if any incoming flit reached its destination----------
        sys.acceptFlit();
        //------------------------------------------------------------
