@@ -135,6 +135,7 @@ void Router :: generateInjectFlit(){
         hist.id = coreInjectFlit.getId();
         hist.portType = Source;
         hist.time = getCycleCount();
+        hist.routingType = NA;
 
         history.push_back(hist);
         //------------------------------------
@@ -181,26 +182,6 @@ void Router :: insertInjectFlit(){
         }
         if (!inputFlit[i].getValid()){
                inputFlit[i] = coreInjectFlit;
-               //--------------------------------
-               // inject flit is getting assigned to input port
-               /*
-               History hist;
-
-               hist.xSrc = coreInjectFlit.getSrc().x;
-               hist.ySrc = coreInjectFlit.getSrc().y;
-
-               hist.xDest = coreInjectFlit.getDest().x;
-               hist.yDest = coreInjectFlit.getDest().y;
-
-               hist.dir = (Direction)i;
-               hist.id = coreInjectFlit.getId();
-               hist.portType = Input;
-               hist.time = getCycleCount();
-
-               history.push_back(hist);
-               */
-               //----------------------------------------
-
                coreInjectFlit.resetValid();
                return;
         }
@@ -268,7 +249,8 @@ void Router :: processInputPort(){
     if (canInjectFlit()){
         insertInjectFlit();
     }
-
+    
+    //Iterating through all input flits--
     for (int i = 0; i < TotalDir; ++i){
         if (inputFlit[i].getValid()){
         //---------------------------------
@@ -283,11 +265,13 @@ void Router :: processInputPort(){
         hist.portType = Input;
         hist.dir = Direction(i);
         hist.time = getCycleCount();
+        hist.routingType = NA;
 
         history.push_back(hist);
         //---------------------------------
         }
     }
+    //-------------------------------------
 }
 
 // determine how many input flits are valid
@@ -388,7 +372,7 @@ void Router :: acceptFlit(){
                 hist.id = inputFlit[i].getId();
                 hist.portType = Destination;
                 hist.time = getCycleCount();
-
+                hist.routingType = NA;
                 history.push_back(hist);
                 //--------------------------------
                 coreCompletedFlit.push_back(inputFlit[i]);
@@ -442,6 +426,7 @@ void Router :: routeOldestFlit(){
     hist.time = getCycleCount();
     hist.portType = Output;
     hist.dir = (Direction)outDir;
+    hist.routingType = Optimized;
     history.push_back(hist);
     //------------------------------------
     if (debugMode){
@@ -488,7 +473,7 @@ void Router :: routeOtherFlit(){
                     // Assigning output port to input flit
                     History hist;
                     hist.xSrc = inputFlit[i].getSrc().x;
-                    hist.xDest = inputFlit[i].getSrc().y;
+                    hist.ySrc = inputFlit[i].getSrc().y;
 
                     hist.xDest = inputFlit[i].getDest().x;
                     hist.yDest = inputFlit[i].getDest().y;
@@ -497,6 +482,7 @@ void Router :: routeOtherFlit(){
                     hist.portType = Output;
                     hist.id = inputFlit[i].getId();
                     hist.time = getCycleCount();
+                    hist.routingType = NonOptimized;
 
                     history.push_back(hist);
                     //------------------------------           
@@ -641,7 +627,8 @@ void Router :: printHistory(){
     for (int i =0; i < history.size(); ++i){
         
         std :: cout << "Source: (" << history[i].xSrc << "," << history[i].ySrc << "), Destination: (" << history[i].xDest << "," << history[i].yDest << ") ";
-        std :: cout << " id: " << history[i].id << ", portType: " << convertPortType2String(history[i].portType) << ", direction: " << convert2Direction(history[i].dir) << ", time: " << history[i].time << "\n";
+        std :: cout << " id: " << history[i].id << ", portType: " << convertPortType2String(history[i].portType) << ", direction: " << convert2Direction(history[i].dir) << ", time: " << history[i].time << " ";
+        std :: cout << " routingType: " << convertRoutingType2String(history[i].routingType) << "\n";
 
     }
 }

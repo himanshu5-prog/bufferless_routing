@@ -25,6 +25,11 @@ enum PortType {
 
 };
 
+enum RoutingType{
+    Optimized,
+    NonOptimized,
+    NA
+};
 struct History {
     int xSrc;
     int ySrc;
@@ -32,6 +37,7 @@ struct History {
     int yDest;
     int id;
     int time;
+    RoutingType routingType;
     PortType portType;
     Direction dir;
 };
@@ -51,6 +57,22 @@ inline std :: string convertPortType2String(PortType p){
 
     if (p == Source){
         return "Source";
+    }
+
+    return "Unknown";
+}
+
+inline std :: string convertRoutingType2String( RoutingType r){
+    if (r == Optimized){
+        return "Optimized";
+    }
+
+    if ( r == NonOptimized){
+        return "NonOptimized";
+    }
+    
+    if ( r == NA){
+        return "NA";
     }
 
     return "Unknown";
