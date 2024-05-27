@@ -10,12 +10,15 @@
 #include <map>
 #include "../Flit/flit.hh"
 
+//Stats for Router------------------------------------------------------------------------------
 struct Stats{
-    unsigned int injectFlitCount;
-    unsigned int completedFlitCount;
+    unsigned int injectFlitCount; // Number of flits injected by router
+    unsigned int completedFlitCount; // Number of flits that was absorbed by destination router 
 };
+//----------------------------------------------------------------------------------------------
 
-
+//This enum contains information regarding port type of router 
+// that a flit entered. When a flit gets generated, it is set to 'Source'.
 enum PortType {
     Input,
     Output,
@@ -24,12 +27,17 @@ enum PortType {
     totalPortDir
 
 };
-
+//------------------------------------------------------------------------------------------
+//Whenever oldest input flit is selected to route, it is guaranteed to route in optimized way.
+// Rest of input flit are not guruanteed to be routed in this way.
 enum RoutingType{
     Optimized,
     NonOptimized,
     NA
 };
+//-------------------------------------------------------------------------------------------
+// Every router stores history data structure containing information of flit generated, entered
+// or extited the router. This help in tracking each flit and facilitates debugging
 struct History {
     int xSrc;
     int ySrc;
@@ -41,7 +49,8 @@ struct History {
     PortType portType;
     Direction dir;
 };
-
+//--------------------------------------------------------------------------------------------
+//Functions to convert enum to string for printing purpose
 inline std :: string convertPortType2String(PortType p){
     if (p == Input){
         return "Input";
@@ -77,6 +86,8 @@ inline std :: string convertRoutingType2String( RoutingType r){
 
     return "Unknown";
 }
+//------------------------------------------------------------------------------------------
+
 class Router {
     int xDim;
     int yDim;
@@ -85,13 +96,25 @@ class Router {
     int sentFlitCount;
     unsigned int id;
     unsigned int cycle;
+    //Input port buffer----------
     Flit inputFlit[TotalDir];
+    //----------------------
+    //Output port buffer-----------
     Flit outputFlit[TotalDir];
+    //------------------------
+    //Injected flit-----------
     Flit coreInjectFlit;
+    //------------------------
+    //List of flits absorbed by destination flit
     std::deque<Flit> coreCompletedFlit;
+    //-----------------------------------------
     bool debugMode;
+    //List of forbidden input & output buffer
     std :: set <int> forbiddenPort;
+    //--------------------------------------
+    //Router history data structure----------
     std :: vector <History> history;
+    //---------------------------------------
 
     public:
     
@@ -146,7 +169,7 @@ class Router {
 
     void setDebugMode();
 
-    void isCornerEdgeRouter();
+    void isCornerEdgeRouter(); // Check if router is in corner or edge and create forbidden port list accordingly
     bool IsForbiddenPort (int i);
     void printForbiddenList();
     void printHistory();

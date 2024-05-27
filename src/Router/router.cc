@@ -88,15 +88,16 @@ void Router :: setConfig(int x, int y){
     config.y = y;
 }
 //------------------------------------------------
-//Function fot injectFlit----------------------------
+//Function for injectFlit----------------------------
 void Router :: generateInjectFlit(){
     Flit fl;
     int xDest, yDest;
     Coord cSrc, cDest;
 
-   
+    // Generating random destination
     xDest = rand()%4;
     yDest = rand()%4;
+    //------------------------------
 
     cDest.x = xDest;
     cDest.y = yDest;
@@ -143,6 +144,7 @@ void Router :: generateInjectFlit(){
     
 }
 
+//Check if flit can be injected--------
 bool Router :: canInjectFlit(){
     
     if (coreInjectFlit.getValid()) {
@@ -154,7 +156,7 @@ bool Router :: canInjectFlit(){
             }
 
             if (!inputFlit[i].getValid()){
-                //Empty flit
+                //Empty flit found. Inject flit
                 return true;
             }
         }
@@ -162,7 +164,7 @@ bool Router :: canInjectFlit(){
     // All flits are occupied
     return false;
 }
-
+//--------------------------------------
 Flit Router :: getInjectFlit(){
     return coreInjectFlit;
 }
@@ -245,7 +247,7 @@ void Router :: processInputPort(){
     //Check if inject flit can be routed. 
     // Inject flit can be inseted to input flit only when
     // -> inject flit is valid. AND
-    // -> there is free space in input flit buffer 
+    // -> there is free space in input flit buffer (not in forbidden list)
     if (canInjectFlit()){
         insertInjectFlit();
     }
@@ -383,7 +385,8 @@ void Router :: acceptFlit(){
         }
     }
 }
-
+//---------------------------------------------------------------------------------------
+// This function select the oldest flit on input side and route it in optimized manner
 void Router :: routeOldestFlit(){
     //Route oldest flit and put it to output port
     if (validInputFlitCount() == 0){
@@ -436,7 +439,8 @@ void Router :: routeOldestFlit(){
     inputFlit[dir].resetValid();
     
 }
-
+//-----------------------------------------------------------------------------------------
+// This function selects rest of flits (other than oldest). Not guranteed to route in optimized way
 void Router :: routeOtherFlit(){
     //Route rest of the flit
     for (int i =0; i < TotalDir; ++i){
@@ -452,7 +456,7 @@ void Router :: routeOtherFlit(){
                 std:: cout << "(routeOtherFlit) :: Router: (" << xDim << "," << yDim << "): Input flit direction: " << convert2Direction((Direction)i ) << "\nInputFlit: \n";
                 inputFlit[i].print(); 
             }
-
+            // Just use first available output port
             for (int j=0; j < TotalDir; ++j){
 
                 if (IsForbiddenPort(j)){

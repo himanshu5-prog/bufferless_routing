@@ -6,6 +6,7 @@ class System {
     int xDim;
     int yDim;
     unsigned int cycle;
+    unsigned int maxCycleCount;
     bool debugMode;
     // Create 2d array of routers
     Router router[4][4];
@@ -15,6 +16,8 @@ class System {
     //Functions for cycle variable
     void incrementCycleCount();
     unsigned int getCycleCount();
+    void setMaxCycleCount(unsigned int x);
+    unsigned int getMaxCycleCount();
     //-----------------------------
     // Print function
     void print();
@@ -30,6 +33,7 @@ class System {
     void printRouterInputFlit(int x, int y);
     //---------------------------------
     //---Generate flit test------------
+    //Only router (0,0) will be injecting flit every 10 cycles
     void generateInjectFlit_oneRouter();
     //---------------------------------
     Stats stat;

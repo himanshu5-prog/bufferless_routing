@@ -42,6 +42,15 @@ void System :: setDebugMode(){
         }
     }
 }
+
+void System :: setMaxCycleCount(unsigned int x){
+    maxCycleCount = x;
+
+}
+
+unsigned int System :: getMaxCycleCount(){
+    return maxCycleCount;
+}
 // Print function---------------------------------------------
 void System :: print(){
     std :: cout << "This system has 16 routers in 4x4 mesh.\n";
@@ -90,7 +99,7 @@ void System :: assignOutputPort(){
     }
 }
 //-----------------------------------------------------------
-
+//Connecting router in mesh topology--------------------------------------------------------------
 void System :: assignInputPort(){
 
     for (int i = 0; i < xDim - 1; ++i){
@@ -172,8 +181,8 @@ void System :: assignInputPort(){
 
     }
 }
-
-//This function checks if injected flitn can be considered for port arbitration
+//---------------------------------------------------------------------------
+//This function checks if injected flit can be considered for port arbitration
 void System :: processInputPort(){
 
     for (int i = 0; i < xDim; ++i){
