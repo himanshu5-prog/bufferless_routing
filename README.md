@@ -13,9 +13,13 @@ Code base:
 
 2) If detailed log file needs to be generated then setDebgMode method (present in System class) can be used. By default, debugMode is set to False.
 
-3) The code will print out the port connection, forbidden port list and history in each of router.
+3) There are two command line arguments that can be provided:
+    i) debugMode (0/1): Default is 0. Set it to 1 to print verbose log file.
+    ii) maxCycleCount (unsigned int): Default is 16.
 
-4) All tests are in test/directory. For system level test, test/test_system.cpp should be run.
+4) The code will print out the port connection, forbidden port list and history in each of router.
+
+5) All tests are in test/directory. For system level test, test/test_system.cpp should be run.
 
 Running the code:
 
