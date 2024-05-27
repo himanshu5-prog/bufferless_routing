@@ -1,3 +1,8 @@
+Total number of arguments: 5
+--debugMode is being used.
+--maxCycleCount is being used.
+debugMode set to 0
+maxCycleCount set to 16
 Router (0,0) is at upper left corner.
 Router (0,1) is at left edge.
 Router (0,2) is at left edge.
@@ -14,98 +19,6 @@ Router (3,0) is at upper right corner.
 Router (3,1) is at right edge.
 Router (3,2) is at right edge.
 Router (3,3) is at lower right corner.
-Forbidden list for router ( 0,0)
-Forbidden list size: 2
-1, 2, 
-Forbidden list for router ( 0,1)
-Forbidden list size: 1
-1, 
-Forbidden list for router ( 0,2)
-Forbidden list size: 1
-1, 
-Forbidden list for router ( 0,3)
-Forbidden list size: 2
-1, 3, 
-Forbidden list for router ( 1,0)
-Forbidden list size: 1
-2, 
-Forbidden list for router ( 1,1)
-Forbidden list size: 0
-Forbidden list for router ( 1,2)
-Forbidden list size: 0
-Forbidden list for router ( 1,3)
-Forbidden list size: 1
-3, 
-Forbidden list for router ( 2,0)
-Forbidden list size: 1
-2, 
-Forbidden list for router ( 2,1)
-Forbidden list size: 0
-Forbidden list for router ( 2,2)
-Forbidden list size: 0
-Forbidden list for router ( 2,3)
-Forbidden list size: 1
-3, 
-Forbidden list for router ( 3,0)
-Forbidden list size: 2
-0, 2, 
-Forbidden list for router ( 3,1)
-Forbidden list size: 1
-0, 
-Forbidden list for router ( 3,2)
-Forbidden list size: 1
-0, 
-Forbidden list for router ( 3,3)
-Forbidden list size: 2
-0, 3, 
-East --> West connection for Router : (0,0) --> Router: (1,0)
-West --> East connection for Router : (1,0) --> Router: (0,0)
- North  --> South connection for Router: (0,1) --> Router: (0,0)
-South --> North connection for Router: (0,0) --> Router: (0,1)
-East --> West connection for Router : (0,1) --> Router: (1,1)
-West --> East connection for Router : (1,1) --> Router: (0,1)
- North  --> South connection for Router: (0,2) --> Router: (0,1)
-South --> North connection for Router: (0,1) --> Router: (0,2)
-East --> West connection for Router : (0,2) --> Router: (1,2)
-West --> East connection for Router : (1,2) --> Router: (0,2)
- North  --> South connection for Router: (0,3) --> Router: (0,2)
-South --> North connection for Router: (0,2) --> Router: (0,3)
-East --> West connection for Router : (1,0) --> Router: (2,0)
-West --> East connection for Router : (2,0) --> Router: (1,0)
- North  --> South connection for Router: (1,1) --> Router: (1,0)
-South --> North connection for Router: (1,0) --> Router: (1,1)
-East --> West connection for Router : (1,1) --> Router: (2,1)
-West --> East connection for Router : (2,1) --> Router: (1,1)
- North  --> South connection for Router: (1,2) --> Router: (1,1)
-South --> North connection for Router: (1,1) --> Router: (1,2)
-East --> West connection for Router : (1,2) --> Router: (2,2)
-West --> East connection for Router : (2,2) --> Router: (1,2)
- North  --> South connection for Router: (1,3) --> Router: (1,2)
-South --> North connection for Router: (1,2) --> Router: (1,3)
-East --> West connection for Router : (2,0) --> Router: (3,0)
-West --> East connection for Router : (3,0) --> Router: (2,0)
- North  --> South connection for Router: (2,1) --> Router: (2,0)
-South --> North connection for Router: (2,0) --> Router: (2,1)
-East --> West connection for Router : (2,1) --> Router: (3,1)
-West --> East connection for Router : (3,1) --> Router: (2,1)
- North  --> South connection for Router: (2,2) --> Router: (2,1)
-South --> North connection for Router: (2,1) --> Router: (2,2)
-East --> West connection for Router : (2,2) --> Router: (3,2)
-West --> East connection for Router : (3,2) --> Router: (2,2)
- North  --> South connection for Router: (2,3) --> Router: (2,2)
-South --> North connection for Router: (2,2) --> Router: (2,3)
-East --> West connection for Router : (0,3) --> Router: (1,3)
-West --> East connection for Router : (1,3) --> Router: (0,3)
-East --> West connection for Router : (1,3) --> Router: (2,3)
-West --> East connection for Router : (2,3) --> Router: (1,3)
-East --> West connection for Router : (2,3) --> Router: (3,3)
-West --> East connection for Router : (3,3) --> Router: (2,3)
- North  --> South connection for Router: (3,1) --> Router: (3,0)
-South --> North connection for Router: (3,0) --> Router: (3,1)
- North  --> South connection for Router: (3,2) --> Router: (3,1)
-South --> North connection for Router: (3,1) --> Router: (3,2)
- North  --> South connection for Router: (3,3) --> Router: (3,2)
-South --> North connection for Router: (3,2) --> Router: (3,3)
 Router (0,0) history:
 Source: (0,0), Destination: (3,1)  id: 0, portType: Source, direction: East, time: 0  routingType: NA
 Source: (0,0), Destination: (3,1)  id: 0, portType: Input, direction: East, time: 0  routingType: NA
