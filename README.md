@@ -20,6 +20,7 @@ Code base:
 Running the code:
 
 > make
+
 > ./systemSim > log
 
 Resources:
