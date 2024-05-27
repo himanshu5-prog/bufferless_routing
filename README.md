@@ -21,7 +21,9 @@ Running the code:
 
 > make
 
-> ./systemSim > log
+> ./systemSim --debugMode 0 --maxCycleCount 16 > log
+
+The above command run simulation with debug mode set to false and maxCycleCount is 16.
 
 Resources:
 
